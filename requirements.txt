@@ -1,0 +1,13 @@
+numpy>=1.24.0
+scipy>=1.10.0
+matplotlib>=3.6.0
+pandas>=1.5.0
+sympy>=1.11.0
+astropy>=5.1.0
+numba>=0.56.0
+h5py>=3.7.0
+tqdm>=4.64.0
+pyyaml>=6.0
+jupyter>=1.0.0
+notebook>=6.4.0
+ipywidgets>=7.7.0
