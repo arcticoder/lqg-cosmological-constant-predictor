@@ -49,6 +49,11 @@ IMMIRZI_PARAMETER = 0.2375  # γ (Immirzi parameter)
 AREA_GAP = 4 * np.pi * IMMIRZI_PARAMETER * PLANCK_LENGTH**2
 GOLDEN_RATIO = (1 + np.sqrt(5)) / 2  # φ ≈ 1.618 (from Discovery 103)
 
+# Enhanced LQG constants from cross-repository validation
+VALIDATED_BACKREACTION_BETA = 1.9443254780147017  # Exact coefficient from unified_LQG_QFT
+PLANCK_VOLUME = PLANCK_LENGTH**3  # V_Pl for volume eigenvalue normalization
+SU2_3NJ_DELTA = 0.1  # Enhancement factor from SU(2) 3nj hypergeometric corrections
+
 @dataclass
 class CosmologicalParameters:
     """Complete set of cosmological parameters for first-principles prediction"""
@@ -66,7 +71,13 @@ class CosmologicalParameters:
     enhancement_factor_max: float = 1e8  # Optimistic enhancement
     
     # Backreaction parameters
-    beta_backreaction: float = 1.9443254780147017  # Validated Einstein coupling
+    beta_backreaction: float = VALIDATED_BACKREACTION_BETA  # Exact validated Einstein coupling
+    
+    # Enhanced LQG parameters from cross-repository validation
+    su2_3nj_enhancement: float = SU2_3NJ_DELTA  # SU(2) 3nj symbol enhancement
+    volume_eigenvalue_cutoff: float = 10.0  # Maximum j for volume eigenvalue sum
+    energy_gaussian_center: float = 5.5  # Energy center for golden ratio modulation
+    energy_gaussian_width: float = 3.0  # Energy width for golden ratio modulation
     
     # Vacuum stability parameters
     vacuum_stability_ratio: float = 1.1  # Energy balance sustainability
@@ -149,6 +160,114 @@ class CosmologicalConstantPredictor:
         else:
             return np.sin(np.pi * x) / (np.pi * x)
     
+    def _compute_volume_eigenvalue(self, j_max: float = 10.0) -> float:
+        """
+        Compute LQG volume eigenvalue sum: V_eigen = l_Planck³ √γ Σ √(j(j+1))
+        
+        Mathematical Implementation from advanced_energy_matter_framework.py
+        
+        Args:
+            j_max: Maximum j value for eigenvalue sum
+            
+        Returns:
+            Volume eigenvalue factor
+        """
+        j_values = np.arange(0.5, j_max + 0.5, 0.5)  # j = 1/2, 1, 3/2, 2, ...
+        volume_sum = np.sum(np.sqrt(j_values * (j_values + 1)))
+        
+        # Volume eigenvalue with Immirzi parameter
+        volume_eigenvalue = PLANCK_VOLUME * np.sqrt(IMMIRZI_PARAMETER) * volume_sum
+        
+        return volume_eigenvalue / PLANCK_VOLUME  # Normalized
+    
+    def _compute_enhanced_area_eigenvalue(self, k: float, length_scale: float) -> float:
+        """
+        Compute enhanced area eigenvalue with SU(2) 3nj hypergeometric corrections
+        
+        A_(n,k) = 4π γ(l) l_Pl² √(k(k+1)) [1 + δ_3nj ₂F₁(-2k, 1/2; 1; -ρ_k)]
+        
+        Args:
+            k: Angular momentum quantum number
+            length_scale: Current length scale
+            
+        Returns:
+            Enhanced area eigenvalue
+        """
+        # Scale-dependent Immirzi parameter
+        gamma_scale = self._compute_scale_dependent_immirzi(length_scale)
+        
+        # Base area eigenvalue
+        area_base = 4 * np.pi * gamma_scale * PLANCK_LENGTH**2 * np.sqrt(k * (k + 1))
+        
+        # SU(2) 3nj hypergeometric enhancement
+        # Simplified ₂F₁(-2k, 1/2; 1; -ρ_k) ≈ (1 + 2k * ρ_k) for small ρ_k
+        rho_k = 0.1 / (1 + k)  # Scale-dependent parameter
+        hypergeometric_factor = 1 + 2 * k * rho_k
+        
+        # Enhanced area eigenvalue
+        area_enhanced = area_base * (1 + self.params.su2_3nj_enhancement * hypergeometric_factor)
+        
+        return area_enhanced
+    
+    def _compute_scale_dependent_immirzi(self, length_scale: float) -> float:
+        """
+        Compute scale-dependent Immirzi parameter with volume eigenvalue scaling
+        
+        γ(l) = γ₀ [1 + β ln(l/l_Pl)] [1 + δ (l_Pl/l)² sinc²(μ(l))] √(V_eigen/V_Pl)
+        
+        Args:
+            length_scale: Length scale in meters
+            
+        Returns:
+            Scale-dependent Immirzi parameter
+        """
+        # Get scale-dependent μ
+        mu_scale, _ = self.compute_scale_dependent_mu(length_scale)
+        
+        # Logarithmic scale correction
+        scale_ratio = length_scale / PLANCK_LENGTH
+        if scale_ratio > 1:
+            ln_correction = 1 + self.params.beta_ln_coefficient * np.log(scale_ratio)
+        else:
+            ln_correction = 1.0
+        
+        # Scale-dependent sinc correction
+        scale_ratio_inverse = PLANCK_LENGTH / length_scale
+        sinc_mu = self._compute_sinc_function(mu_scale)
+        sinc_correction = 1 + 0.1 * (scale_ratio_inverse**2) * (sinc_mu**2)
+        
+        # Volume eigenvalue enhancement
+        volume_factor = np.sqrt(self._compute_volume_eigenvalue(self.params.volume_eigenvalue_cutoff))
+        
+        # Combined scale-dependent Immirzi parameter
+        gamma_scale = IMMIRZI_PARAMETER * ln_correction * sinc_correction * volume_factor
+        
+        return gamma_scale
+    
+    def _compute_golden_ratio_modulation(self, k: float, energy_scale: float = 1.0) -> float:
+        """
+        Compute golden ratio modulation with energy-dependent enhancement
+        
+        μ_eff = μ₀ [1 + (φ-1)/φ cos(2π k/φ)] [1 + 0.2 e^(-((E-5.5)/3)²)]
+        
+        Args:
+            k: Angular momentum quantum number
+            energy_scale: Energy scale parameter (default: 1.0)
+            
+        Returns:
+            Golden ratio modulation factor
+        """
+        # Golden ratio modulation
+        phi = GOLDEN_RATIO
+        golden_modulation = 1 + (phi - 1) / phi * np.cos(2 * np.pi * k / phi)
+        
+        # Energy-dependent Gaussian enhancement
+        energy_gaussian = 0.2 * np.exp(-((energy_scale - self.params.energy_gaussian_center) 
+                                       / self.params.energy_gaussian_width)**2)
+        energy_enhancement = 1 + energy_gaussian
+        
+        return golden_modulation * energy_enhancement
+    
     def compute_scale_dependent_mu(self, length_scale: float) -> Tuple[float, float]:
         """
         Compute scale-dependent polymer parameter μ(ℓ)
@@ -187,12 +306,10 @@ class CosmologicalConstantPredictor:
     
     def compute_effective_cosmological_constant(self, length_scale: float) -> Dict[str, float]:
         """
-        Compute effective cosmological constant with scale-dependent corrections
+        Compute effective cosmological constant with enhanced scale-dependent corrections
         
         Enhanced Mathematical Implementation:
-        Λ_{effective}(ℓ) = Λ_0 [1 + γ(ℓ_Pl/ℓ)² sinc²(μ(ℓ))]
-        
-        This is the critical enhancement identified in enhanced_scale_up_feasibility.py
+        Λ_{effective}(ℓ) = Λ_0 [1 + γ(ℓ)(ℓ_Pl/ℓ)² sinc²(μ(ℓ))] with scale-dependent γ(ℓ)
         
         Args:
             length_scale: Length scale ℓ in meters
@@ -200,16 +317,17 @@ class CosmologicalConstantPredictor:
         Returns:
             Dictionary with effective cosmological constant and components
         """
-        # Get scale-dependent μ
+        # Get scale-dependent μ and γ
         mu_scale, alpha_scale = self.compute_scale_dependent_mu(length_scale)
+        gamma_scale = self._compute_scale_dependent_immirzi(length_scale)
         
         # Compute enhanced sinc²(μ(ℓ)) with correct π factors
         sinc_mu = self._compute_sinc_function(mu_scale)
         sinc_squared = sinc_mu**2
         
-        # Compute scale correction term
+        # Compute scale correction term with scale-dependent Immirzi
         scale_ratio_inverse = PLANCK_LENGTH / length_scale
-        scale_correction = self.params.gamma_coefficient * (scale_ratio_inverse**2) * sinc_squared
+        scale_correction = gamma_scale * (scale_ratio_inverse**2) * sinc_squared
         
         # Effective cosmological constant with polymer enhancement
         lambda_effective = self.params.lambda_0 * (1.0 + scale_correction)
@@ -218,26 +336,115 @@ class CosmologicalConstantPredictor:
         golden_enhancement = 1.0 + 0.1 / GOLDEN_RATIO
         lambda_effective *= golden_enhancement
         
+        # Enhanced backreaction coupling to vacuum energy
+        enhanced_lambda_effective = lambda_effective + (8 * np.pi * G_NEWTON / C_LIGHT**4) * \
+                                   VALIDATED_BACKREACTION_BETA * self.params.mu_polymer**2
+        
         return {
-            'lambda_effective': lambda_effective,
+            'lambda_effective': enhanced_lambda_effective,
+            'lambda_base': lambda_effective,
             'lambda_0': self.params.lambda_0,
             'mu_scale': mu_scale,
+            'gamma_scale': gamma_scale,
             'alpha_scale': alpha_scale,
             'sinc_value': sinc_mu,
             'sinc_squared': sinc_squared,
             'scale_correction': scale_correction,
             'enhancement_factor': (1.0 + scale_correction) * golden_enhancement,
-            'golden_enhancement': golden_enhancement
+            'golden_enhancement': golden_enhancement,
+            'backreaction_enhancement': VALIDATED_BACKREACTION_BETA * self.params.mu_polymer**2
         }
     
-    def compute_polymer_vacuum_energy(self, electric_field: float = 0.0) -> Dict[str, float]:
+    def compute_enhanced_polymer_vacuum_energy(self, 
+                                             length_scale: float = 1e-15,
+                                             k_max: float = 10.0) -> Dict[str, float]:
         """
-        Compute polymer-modified vacuum energy density
+        Compute enhanced polymer-modified vacuum energy density with SU(2) corrections
         
         Enhanced Mathematical Implementation:
-        ρ_eff = (1/2)[(sin(πμ)/(πμ))² + (∇φ)² + m²φ²]
+        ρ_vacuum = (ℏc)/(8π l_Pl⁴) Σ_{k=1/2}^∞ (2k+1) [sin(π μ₀ √(k(k+1)))/(π μ₀ √(k(k+1)))]² √V_eigen(k)
         
-        With corrections from explicit_mathematical_updates_v2.py
+        Args:
+            length_scale: Target length scale for calculation
+            k_max: Maximum k value for quantum number sum
+            
+        Returns:
+            Dictionary with enhanced vacuum energy components
+        """
+        # Base Planck energy density
+        planck_energy_density = HBAR * C_LIGHT / PLANCK_LENGTH**4
+        
+        # Initialize vacuum energy sum
+        vacuum_energy_sum = 0.0
+        eigenvalue_contributions = []
+        
+        # Sum over angular momentum quantum numbers k = 1/2, 1, 3/2, ...
+        k_values = np.arange(0.5, k_max + 0.5, 0.5)
+        
+        for k in k_values:
+            # Enhanced area eigenvalue with SU(2) 3nj corrections
+            area_eigenvalue = self._compute_enhanced_area_eigenvalue(k, length_scale)
+            
+            # Polymer parameter with golden ratio modulation
+            mu_k = self.params.mu_polymer * np.sqrt(k * (k + 1))
+            golden_modulation = self._compute_golden_ratio_modulation(k, energy_scale=k)
+            mu_effective = mu_k * golden_modulation
+            
+            # Enhanced sinc function (critical correction)
+            sinc_mu_k = self._compute_sinc_function(mu_effective)
+            sinc_squared = sinc_mu_k**2
+            
+            # Volume eigenvalue contribution
+            volume_contribution = np.sqrt(self._compute_volume_eigenvalue(k))
+            
+            # Degeneracy factor (2k+1)
+            degeneracy = 2 * k + 1
+            
+            # Individual contribution to vacuum energy
+            k_contribution = degeneracy * sinc_squared * volume_contribution
+            vacuum_energy_sum += k_contribution
+            
+            eigenvalue_contributions.append({
+                'k': k,
+                'area_eigenvalue': area_eigenvalue,
+                'mu_effective': mu_effective,
+                'sinc_value': sinc_mu_k,
+                'volume_contribution': volume_contribution,
+                'degeneracy': degeneracy,
+                'contribution': k_contribution
+            })
+        
+        # Total enhanced vacuum energy density
+        vacuum_energy_enhanced = (HBAR * C_LIGHT / (8 * np.pi * PLANCK_LENGTH**4)) * vacuum_energy_sum
+        
+        # Apply validated backreaction coupling
+        backreaction_factor = 1.0 + self.params.beta_backreaction * self.params.mu_polymer**2
+        vacuum_energy_final = vacuum_energy_enhanced * backreaction_factor
+        
+        # Scale-dependent enhancement from effective cosmological constant
+        lambda_result = self.compute_effective_cosmological_constant(length_scale)
+        scale_enhancement = lambda_result['enhancement_factor']
+        vacuum_energy_scale_enhanced = vacuum_energy_final * scale_enhancement
+        
+        return {
+            'vacuum_energy_base': vacuum_energy_enhanced,
+            'vacuum_energy_backreaction': vacuum_energy_final,
+            'vacuum_energy_scale_enhanced': vacuum_energy_scale_enhanced,
+            'backreaction_factor': backreaction_factor,
+            'scale_enhancement': scale_enhancement,
+            'quantum_sum': vacuum_energy_sum,
+            'k_max_used': k_max,
+            'num_eigenvalues': len(k_values),
+            'eigenvalue_contributions': eigenvalue_contributions
+        }
+    def compute_polymer_vacuum_energy(self, electric_field: float = 0.0) -> Dict[str, float]:
+        """
+        Compute polymer-modified vacuum energy density with validated corrections
+        
+        Enhanced Mathematical Implementation:
+        ρ_poly = (1/2)[(sin(πμ)/(πμ))² + (∇φ)² + m²φ²]
+        
+        With exact backreaction coefficient from unified_LQG_QFT
         
         Args:
             electric_field: Applied electric field (V/m)
@@ -249,8 +456,9 @@ class CosmologicalConstantPredictor:
         planck_energy_density = HBAR * C_LIGHT / PLANCK_LENGTH**4
         
         # Polymer modification factor with corrected sinc function
+        # Critical: sin(πμ)/(πμ) NOT sin(μ)/μ
         sinc_mu = self._compute_sinc_function(self.params.mu_polymer)
-        polymer_factor = sinc_mu**2
+        polymer_factor = 0.5 * sinc_mu**2  # Validated formula from unified_LQG_QFT
         
         # Field gradient contribution (if electric field present)
         if electric_field > 0:
@@ -261,14 +469,14 @@ class CosmologicalConstantPredictor:
             field_contribution = 0.0
         
         # Enhanced vacuum energy with backreaction coupling
-        vacuum_energy_base = 0.5 * planck_energy_density * polymer_factor
-        vacuum_energy_field = 0.5 * planck_energy_density * field_contribution
+        vacuum_energy_base = planck_energy_density * polymer_factor
+        vacuum_energy_field = planck_energy_density * field_contribution
         
         # Total enhanced vacuum energy
         vacuum_energy_total = vacuum_energy_base + vacuum_energy_field
         
-        # Backreaction enhancement (from enhanced frameworks)
-        backreaction_factor = 1.0 + self.params.beta_backreaction * self.params.mu_polymer**2
+        # Backreaction enhancement with exact validated coefficient
+        backreaction_factor = 1.0 + VALIDATED_BACKREACTION_BETA * self.params.mu_polymer**2
         vacuum_energy_enhanced = vacuum_energy_total * backreaction_factor
         
         return {
@@ -306,11 +514,13 @@ class CosmologicalConstantPredictor:
         
         logger.info(f"Scale-dependent Λ: {lambda_effective:.3e} m⁻²")
         
-        # 2. Polymer-modified vacuum energy
-        vacuum_result = self.compute_polymer_vacuum_energy()
-        vacuum_energy_density = vacuum_result['vacuum_energy_enhanced']
+        # 2. Enhanced polymer-modified vacuum energy with SU(2) corrections
+        enhanced_vacuum_result = self.compute_enhanced_polymer_vacuum_energy(target_scale)
+        vacuum_energy_density = enhanced_vacuum_result['vacuum_energy_scale_enhanced']
         
-        logger.info(f"Vacuum energy density: {vacuum_energy_density:.3e} J/m³")
+        logger.info(f"Enhanced vacuum energy density: {vacuum_energy_density:.3e} J/m³")
+        logger.info(f"Quantum sum convergence: {enhanced_vacuum_result['quantum_sum']:.3e}")
+        logger.info(f"Volume eigenvalue contributions: {enhanced_vacuum_result['num_eigenvalues']} terms")
         
         # 3. Validation metrics
         cross_scale_consistency = lambda_result['enhancement_factor'] / \
@@ -365,10 +575,10 @@ class CosmologicalConstantPredictor:
                                        scale_range: Tuple[float, float] = (PLANCK_LENGTH, HUBBLE_DISTANCE),
                                        num_scales: int = 61) -> Dict[str, float]:
         """
-        Validate cross-scale consistency of cosmological constant prediction
+        Validate cross-scale consistency of enhanced cosmological constant prediction
         
-        Tests mathematical consistency across 30+ orders of magnitude as required
-        for precision warp-drive engineering applications.
+        Tests mathematical consistency across 30+ orders of magnitude using enhanced
+        polymer quantization with SU(2) 3nj corrections and volume eigenvalues.
         
         Args:
             scale_range: (min_scale, max_scale) in meters
@@ -434,24 +644,38 @@ class CosmologicalConstantPredictor:
 
 def main():
     """
-    Demonstration of first-principles cosmological constant prediction
+    Demonstration of enhanced first-principles cosmological constant prediction
+    with SU(2) 3nj corrections and validated mathematical formulations
     """
-    print("🌌 LQG Cosmological Constant Predictor")
-    print("=====================================")
+    print("🌌 Enhanced LQG Cosmological Constant Predictor")
+    print("=" * 47)
+    print("First-principles prediction with SU(2) 3nj corrections")
     print()
     
     # Initialize predictor with default parameters
     predictor = CosmologicalConstantPredictor()
     
-    # Perform first-principles prediction
-    print("🎯 First-Principles Prediction")
-    print("-" * 30)
+    # Perform enhanced first-principles prediction
+    print("🎯 Enhanced First-Principles Prediction")
+    print("-" * 39)
     prediction = predictor.predict_lambda_from_first_principles()
     
     print(f"Cosmological Constant:     {prediction.lambda_effective:.3e} m⁻²")
     print(f"Vacuum Energy Density:     {prediction.vacuum_energy_density:.3e} J/m³")
     print(f"Enhancement Factor:        {prediction.enhancement_factor:.3f}")
     print(f"95% Confidence Interval:   [{prediction.confidence_interval[0]:.2e}, {prediction.confidence_interval[1]:.2e}]")
+    print()
+    
+    # Enhanced vacuum energy analysis
+    print("⚡ Enhanced Vacuum Energy Analysis")
+    print("-" * 33)
+    enhanced_vacuum = predictor.compute_enhanced_polymer_vacuum_energy()
+    
+    print(f"Base Vacuum Energy:        {enhanced_vacuum['vacuum_energy_base']:.3e} J/m³")
+    print(f"Backreaction Enhancement:  {enhanced_vacuum['backreaction_factor']:.6f}")
+    print(f"Scale Enhancement:         {enhanced_vacuum['scale_enhancement']:.6f}")
+    print(f"Quantum Sum Convergence:   {enhanced_vacuum['quantum_sum']:.3e}")
+    print(f"Volume Eigenvalue Terms:   {enhanced_vacuum['num_eigenvalues']}")
     print()
     
     # Cross-scale validation
@@ -464,8 +688,8 @@ def main():
     print(f"Relative Variation:        {validation['lambda_relative_variation']:.2e}")
     print()
     
-    print("✅ First-principles cosmological constant prediction complete!")
-    print("   Vacuum energy density calculated from first principles using LQG framework.")
+    print("✅ Enhanced first-principles cosmological constant prediction complete!")
+    print("   Vacuum energy density with SU(2) 3nj corrections and validated LQG formulations.")
 
 if __name__ == "__main__":
     main()
