@@ -4,16 +4,17 @@ LQG Cosmological Constant Predictor - Main Engine
 =================================================
 
 First-principles prediction of the cosmological constant (vacuum energy density) 
-using the unified Loop Quantum Gravity framework for precision warp-drive engineering.
+using the unified Loop Quantum Gravity framework.
 
-This module implements the enhanced mathematical formulations identified across
-the repository ecosystem for scale-dependent cosmological constant prediction.
+This module implements the enhanced mathematical formulations for scale-dependent 
+cosmological constant prediction from first principles, providing the net zero-point 
+energy in our unified LQG framework.
 
 Key Features:
 - Scale-dependent cosmological constant: Λ_effective(ℓ) = Λ_0 [1 + γ(ℓ_Pl/ℓ)² sinc²(μ(ℓ))]
 - Polymer-modified vacuum energy with corrected sinc function: sin(πμ)/(πμ)
-- ANEC-compliant vacuum enhancement for exotic matter sourcing
 - Cross-scale validation from Planck to cosmological scales
+- First-principles vacuum energy density calculations
 
 Author: LQG Cosmological Constant Predictor Team
 Date: July 3, 2025
@@ -60,15 +61,14 @@ class CosmologicalParameters:
     beta_ln_coefficient: float = 0.05  # Logarithmic correction coefficient
     gamma_coefficient: float = 1.0  # Scale-dependent Λ coupling
     
-    # Enhanced enhancement factors (from validated frameworks)
+    # Enhancement factors (from validated frameworks)
     enhancement_factor_min: float = 1e6  # Conservative enhancement
     enhancement_factor_max: float = 1e8  # Optimistic enhancement
     
     # Backreaction parameters
     beta_backreaction: float = 1.9443254780147017  # Validated Einstein coupling
     
-    # Vacuum engineering parameters
-    casimir_enhancement: float = 484.0  # Energy enhancement factor (validated)
+    # Vacuum stability parameters
     vacuum_stability_ratio: float = 1.1  # Energy balance sustainability
 
 @dataclass
@@ -77,7 +77,6 @@ class PredictionResult:
     # Primary predictions
     lambda_effective: float  # Effective cosmological constant
     vacuum_energy_density: float  # Vacuum energy density (J/m³)
-    exotic_matter_density: float  # Required exotic matter density (kg/m³)
     
     # Scale-dependent components
     lambda_0: float  # Base cosmological constant
@@ -85,14 +84,7 @@ class PredictionResult:
     enhancement_factor: float  # Total enhancement factor
     scale_correction: float  # Scale correction term
     
-    # Engineering parameters
-    casimir_field_strength: float  # Required Casimir field (V/m)
-    bubble_wall_thickness: float  # Optimal wall thickness (m)
-    energy_budget_per_m3: float  # Energy requirement per cubic meter (J/m³)
-    
     # Validation metrics
-    anec_compliance: float  # ANEC violation compliance factor
-    thermodynamic_consistency: float  # Thermodynamic consistency score
     cross_scale_consistency: float  # Cross-scale validation score
     
     # Uncertainty bounds
@@ -104,7 +96,8 @@ class CosmologicalConstantPredictor:
     First-principles cosmological constant predictor using unified LQG framework
     
     Implements enhanced mathematical formulations for scale-dependent cosmological
-    constant prediction enabling precision warp-drive engineering applications.
+    constant prediction, providing the net zero-point energy in our unified LQG 
+    framework.
     """
     
     def __init__(self, params: Optional[CosmologicalParameters] = None):
@@ -289,62 +282,14 @@ class CosmologicalConstantPredictor:
             'field_contribution': field_contribution
         }
     
-    def compute_anec_compliant_bounds(self, spatial_scale: float, 
-                                    temporal_scale: float) -> Dict[str, float]:
-        """
-        Compute ANEC-compliant quantum inequality bounds for exotic matter sourcing
-        
-        Enhanced Mathematical Implementation:
-        ∫ ρ_eff(t) f(t) dt ≥ -ℏ sinc(πμ)/(12π τ²)
-        
-        From qi_bound_modification.tex with correct sinc formulation
-        
-        Args:
-            spatial_scale: Characteristic spatial scale (m)
-            temporal_scale: Characteristic temporal scale (s)
-            
-        Returns:
-            Dictionary with ANEC bounds and exotic matter limits
-        """
-        # Enhanced ANEC bound with polymer corrections
-        sinc_mu = self._compute_sinc_function(self.params.mu_polymer)
-        
-        # Quantum inequality bound (Ford-Roman with LQG modifications)
-        anec_bound = -HBAR * sinc_mu / (12 * np.pi * temporal_scale**2)
-        
-        # Convert to energy density bound
-        anec_energy_density = anec_bound / spatial_scale
-        
-        # Exotic matter density limit (using E = mc²)
-        exotic_matter_limit = abs(anec_energy_density) / C_LIGHT**2
-        
-        # Enhancement from polymer effects
-        polymer_enhancement = 1.0 + self.params.mu_polymer**2 * spatial_scale / PLANCK_LENGTH
-        exotic_matter_enhanced = exotic_matter_limit * polymer_enhancement
-        
-        # Casimir-based sourcing estimate
-        casimir_energy_density = self.params.casimir_enhancement * abs(anec_energy_density)
-        casimir_matter_equivalent = casimir_energy_density / C_LIGHT**2
-        
-        return {
-            'anec_bound': anec_bound,
-            'anec_energy_density': anec_energy_density,
-            'exotic_matter_limit': exotic_matter_limit,
-            'exotic_matter_enhanced': exotic_matter_enhanced,
-            'polymer_enhancement': polymer_enhancement,
-            'casimir_energy_density': casimir_energy_density,
-            'casimir_matter_equivalent': casimir_matter_equivalent,
-            'sinc_value': sinc_mu
-        }
-    
     def predict_lambda_from_first_principles(self, 
                                            target_scale: float = 1e-15,
                                            include_uncertainty: bool = True) -> PredictionResult:
         """
-        First-principles prediction of cosmological constant for warp-drive engineering
+        First-principles prediction of cosmological constant from LQG
         
         This is the main prediction function implementing all enhanced mathematical
-        frameworks for precision exotic matter requirements and bubble dynamics.
+        frameworks for scale-dependent cosmological constant calculation.
         
         Args:
             target_scale: Target length scale for prediction (default: femtometer scale)
@@ -367,29 +312,11 @@ class CosmologicalConstantPredictor:
         
         logger.info(f"Vacuum energy density: {vacuum_energy_density:.3e} J/m³")
         
-        # 3. ANEC bounds for exotic matter
-        temporal_scale = target_scale / C_LIGHT  # Light-crossing time
-        anec_result = self.compute_anec_compliant_bounds(target_scale, temporal_scale)
-        exotic_matter_density = anec_result['exotic_matter_enhanced']
-        
-        logger.info(f"Exotic matter density: {exotic_matter_density:.3e} kg/m³")
-        
-        # 4. Engineering parameters
-        casimir_field_strength = np.sqrt(anec_result['casimir_energy_density'] * 2 / const.epsilon_0)
-        bubble_wall_thickness = target_scale * lambda_result['enhancement_factor']
-        energy_budget_per_m3 = anec_result['casimir_energy_density']
-        
-        # 5. Validation metrics
-        anec_compliance = min(1.0, abs(anec_result['anec_bound']) / 
-                             (HBAR / (12 * np.pi * temporal_scale**2)))
-        
-        thermodynamic_consistency = vacuum_result['backreaction_factor'] / \
-                                   (1.0 + self.params.beta_backreaction)
-        
+        # 3. Validation metrics
         cross_scale_consistency = lambda_result['enhancement_factor'] / \
                                 lambda_result['golden_enhancement']
         
-        # 6. Uncertainty quantification
+        # 4. Uncertainty quantification
         if include_uncertainty:
             # Parameter uncertainties (typical ±5% for well-constrained parameters)
             mu_uncertainty = 0.05 * self.params.mu_polymer
@@ -414,7 +341,6 @@ class CosmologicalConstantPredictor:
             # Primary predictions
             lambda_effective=lambda_effective,
             vacuum_energy_density=vacuum_energy_density,
-            exotic_matter_density=exotic_matter_density,
             
             # Scale-dependent components
             lambda_0=self.params.lambda_0,
@@ -422,14 +348,7 @@ class CosmologicalConstantPredictor:
             enhancement_factor=lambda_result['enhancement_factor'],
             scale_correction=lambda_result['scale_correction'],
             
-            # Engineering parameters
-            casimir_field_strength=casimir_field_strength,
-            bubble_wall_thickness=bubble_wall_thickness,
-            energy_budget_per_m3=energy_budget_per_m3,
-            
             # Validation metrics
-            anec_compliance=anec_compliance,
-            thermodynamic_consistency=thermodynamic_consistency,
             cross_scale_consistency=cross_scale_consistency,
             
             # Uncertainty bounds
@@ -439,7 +358,6 @@ class CosmologicalConstantPredictor:
         
         logger.info("First-principles prediction complete!")
         logger.info(f"Enhancement factor: {lambda_result['enhancement_factor']:.3f}")
-        logger.info(f"ANEC compliance: {anec_compliance:.3f}")
         
         return result
     
@@ -513,117 +431,6 @@ class CosmologicalConstantPredictor:
             'num_scales_tested': num_scales,
             'scale_range_orders': np.log10(scale_range[1] / scale_range[0])
         }
-    
-    def generate_warp_engineering_report(self, 
-                                       prediction: PredictionResult,
-                                       bubble_velocity: float = 0.1,
-                                       bubble_radius: float = 100.0) -> Dict[str, any]:
-        """
-        Generate comprehensive warp-drive engineering report
-        
-        Translates first-principles cosmological constant prediction into practical
-        engineering specifications for warp bubble construction.
-        
-        Args:
-            prediction: Cosmological constant prediction result
-            bubble_velocity: Desired warp velocity (as fraction of c)
-            bubble_radius: Warp bubble radius (meters)
-            
-        Returns:
-            Complete engineering specification report
-        """
-        logger.info("Generating warp-drive engineering report...")
-        
-        # Bubble geometry calculations
-        bubble_volume = (4/3) * np.pi * bubble_radius**3
-        wall_volume = 4 * np.pi * bubble_radius**2 * prediction.bubble_wall_thickness
-        
-        # Energy requirements
-        total_exotic_energy = prediction.energy_budget_per_m3 * wall_volume
-        total_exotic_mass = prediction.exotic_matter_density * wall_volume
-        
-        # Field requirements
-        required_field_strength = prediction.casimir_field_strength
-        power_requirement = total_exotic_energy / (bubble_radius / (bubble_velocity * C_LIGHT))
-        
-        # Casimir array specifications
-        optimal_plate_separation = prediction.bubble_wall_thickness / 10.0  # 10 plates per wall thickness
-        num_casimir_plates = int(wall_volume / optimal_plate_separation**3)
-        casimir_force_per_plate = prediction.energy_budget_per_m3 * optimal_plate_separation**2
-        
-        # Material requirements
-        metamaterial_volume = wall_volume * 0.1  # 10% metamaterial enhancement
-        superconductor_mass = wall_volume * 8000  # kg (assuming superconducting density)
-        
-        # Safety margins
-        field_safety_factor = 2.0  # 100% safety margin for field strength
-        energy_safety_factor = 1.5  # 50% safety margin for energy requirements
-        
-        # Performance predictions
-        max_acceleration = bubble_velocity * C_LIGHT / bubble_radius  # m/s²
-        energy_efficiency = prediction.anec_compliance * prediction.thermodynamic_consistency
-        
-        engineering_report = {
-            # Bubble specifications
-            'bubble_geometry': {
-                'radius': bubble_radius,
-                'volume': bubble_volume,
-                'wall_thickness': prediction.bubble_wall_thickness,
-                'wall_volume': wall_volume,
-                'velocity': bubble_velocity
-            },
-            
-            # Energy requirements
-            'energy_requirements': {
-                'total_exotic_energy': total_exotic_energy,
-                'energy_per_m3': prediction.energy_budget_per_m3,
-                'power_requirement': power_requirement,
-                'energy_with_safety': total_exotic_energy * energy_safety_factor
-            },
-            
-            # Field specifications
-            'field_specifications': {
-                'required_field_strength': required_field_strength,
-                'field_with_safety': required_field_strength * field_safety_factor,
-                'critical_field_ratio': required_field_strength / self.critical_electric_field
-            },
-            
-            # Casimir array design
-            'casimir_array': {
-                'plate_separation': optimal_plate_separation,
-                'num_plates': num_casimir_plates,
-                'force_per_plate': casimir_force_per_plate,
-                'total_casimir_force': casimir_force_per_plate * num_casimir_plates
-            },
-            
-            # Material requirements
-            'materials': {
-                'exotic_matter_mass': total_exotic_mass,
-                'metamaterial_volume': metamaterial_volume,
-                'superconductor_mass': superconductor_mass
-            },
-            
-            # Performance metrics
-            'performance': {
-                'max_acceleration': max_acceleration,
-                'energy_efficiency': energy_efficiency,
-                'anec_compliance': prediction.anec_compliance,
-                'thermodynamic_consistency': prediction.thermodynamic_consistency
-            },
-            
-            # Uncertainty bounds
-            'uncertainties': {
-                'lambda_uncertainty': prediction.lambda_uncertainty,
-                'confidence_interval': prediction.confidence_interval,
-                'prediction_reliability': prediction.cross_scale_consistency
-            }
-        }
-        
-        logger.info(f"Engineering report complete for {bubble_velocity:.1%}c bubble")
-        logger.info(f"Total exotic energy: {total_exotic_energy:.2e} J")
-        logger.info(f"Required field strength: {required_field_strength:.2e} V/m")
-        
-        return engineering_report
 
 def main():
     """
@@ -643,7 +450,6 @@ def main():
     
     print(f"Cosmological Constant:     {prediction.lambda_effective:.3e} m⁻²")
     print(f"Vacuum Energy Density:     {prediction.vacuum_energy_density:.3e} J/m³")
-    print(f"Exotic Matter Density:     {prediction.exotic_matter_density:.3e} kg/m³")
     print(f"Enhancement Factor:        {prediction.enhancement_factor:.3f}")
     print(f"95% Confidence Interval:   [{prediction.confidence_interval[0]:.2e}, {prediction.confidence_interval[1]:.2e}]")
     print()
@@ -658,23 +464,8 @@ def main():
     print(f"Relative Variation:        {validation['lambda_relative_variation']:.2e}")
     print()
     
-    # Warp engineering report
-    print("🚀 Warp Engineering Specifications")
-    print("-" * 35)
-    engineering = predictor.generate_warp_engineering_report(prediction, 
-                                                           bubble_velocity=0.1, 
-                                                           bubble_radius=100.0)
-    
-    print(f"Bubble Radius:             {engineering['bubble_geometry']['radius']:.1f} m")
-    print(f"Wall Thickness:            {engineering['bubble_geometry']['wall_thickness']:.2e} m")
-    print(f"Total Exotic Energy:       {engineering['energy_requirements']['total_exotic_energy']:.2e} J")
-    print(f"Required Field Strength:   {engineering['field_specifications']['required_field_strength']:.2e} V/m")
-    print(f"Casimir Plates Needed:     {engineering['casimir_array']['num_plates']:,}")
-    print(f"Energy Efficiency:         {engineering['performance']['energy_efficiency']:.3f}")
-    print()
-    
     print("✅ First-principles cosmological constant prediction complete!")
-    print("   Ready for precision warp-drive engineering applications.")
+    print("   Vacuum energy density calculated from first principles using LQG framework.")
 
 if __name__ == "__main__":
     main()

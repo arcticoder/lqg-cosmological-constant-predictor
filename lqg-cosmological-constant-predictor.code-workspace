@@ -58,7 +58,8 @@
 			"**/.pytest_cache": true,
 			"**/venv": true,
 			"**/.venv": true
-		}
+		},
+		"powershell.cwd": "lqg-cosmological-constant-predictor (main)"
 	},
 	"extensions": {
 		"recommendations": [

@@ -7,8 +7,7 @@ Validates the mathematical consistency of cosmological constant predictions
 across 30+ orders of magnitude from Planck scale to cosmological scales.
 
 This module implements comprehensive validation to ensure that first-principles
-predictions maintain consistency across all physical scales relevant to
-warp-drive engineering applications.
+predictions maintain consistency across all physical scales.
 
 Author: LQG Cosmological Constant Predictor Team
 Date: July 3, 2025
