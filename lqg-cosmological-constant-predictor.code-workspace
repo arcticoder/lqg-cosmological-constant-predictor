@@ -1,6 +1,10 @@
 {
 	"folders": [
 		{
+			"name": "energy",
+			"path": "../energy"
+		},
+		{
 			"name": "lqg-cosmological-constant-predictor (main)",
 			"path": "."
 		},
