@@ -1,24 +1,14 @@
-# LQG Cosmological Con3. **📊 Comprehensive5. **🔬 Advanced Cross-Scale Validation**
-   - **61 orders of magnitude tested** (Planck length to Hubble distance)
-   - Mathematical stability with adaptive convergence tolerance (1×10^-15)
-   - **Perfect numerical stability** across all tested scales
-   - **Production-ready performance** (<5 second prediction times)
+# LQG Cosmological Constant Predictor
 
-6. **🌍 Enhanced Mathematical Framework**ainty Quantification**
-   - **Bayesian parameter estimation** with validated 3×3 correlation matrices
-   - **100% Monte Carlo sampling efficiency** achieved (2000 samples)
-   - **Parameter sensitivity analysis** with finite difference methods
-   - **Series convergence analysis** with Shanks transformation acceleration
-   - **95% confidence intervals** with forward uncertainty propagation
+## Related Repositories
 
-4. **🔋 Enhanced Exotic Matter Budget Framework**
-   - **Scale-dependent exotic matter density calculations** using predicted Λ_effective(ℓ)
-   - **Polymer enhancement factors** achieving 6.3× total enhancement over classical estimates
-   - **Exact backreaction coupling** β = 1.9443254780147017 for precise exotic energy requirements
-   - **Target density optimization** for warp drive engineering applications
-   - **Parameter-free bubble dynamics** enabling direct translation to lab field strengths
+- [energy](https://github.com/arcticoder/energy): Central meta-repo for all energy, quantum, and LQG research. This predictor is integrated for cosmological modeling and digital twin applications.
+- [lqg-anec-framework](https://github.com/arcticoder/lqg-anec-framework): Shares theoretical and simulation infrastructure for LQG and cosmological constant analysis.
+- [lqg-first-principles-fine-structure-constant](https://github.com/arcticoder/lqg-first-principles-fine-structure-constant): Related for fundamental constant prediction and LQG parameter studies.
+- [unified-lqg](https://github.com/arcticoder/unified-lqg): Core LQG framework providing Immirzi parameter and volume eigenvalue scaling.
+- [unified-lqg-qft](https://github.com/arcticoder/unified-lqg-qft): Provides exact backreaction coefficient and Einstein coupling for cosmological predictions.
 
-5. **🔬 Advanced Cross-Scale Validation**edictor
+All repositories are part of the [arcticoder](https://github.com/arcticoder) ecosystem and link back to the energy framework for unified documentation and integration.
 
 **🌌 First-Principles Cosmological Constant Derivation with Enhanced Uncertainty Quantification**
 
