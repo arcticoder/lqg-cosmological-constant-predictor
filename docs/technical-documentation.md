@@ -831,7 +831,7 @@ print(f"Relative variation: {validation['lambda_relative_variation']:.2e}")
 - **Troubleshooting**: Common issues and debugging tools documented
 
 #### ✅ Enhanced UQ Framework Implementation
-- **Bayesian Parameter Estimation**: 100% sampling efficiency achieved
+- **Bayesian Parameter Estimation**: High sampling efficiency observed in tested configurations
 - **Monte Carlo Validation**: 2000 samples with validated correlation matrices
 - **Parameter Sensitivity Analysis**: Finite difference methods implemented
 - **Series Convergence Analysis**: Shanks transformation acceleration
