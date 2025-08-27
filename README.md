@@ -10,29 +10,45 @@
 
 All repositories are part of the [arcticoder](https://github.com/arcticoder) ecosystem and link back to the energy framework for unified documentation and integration.
 
+
 **🌌 First-Principles Cosmological Constant Derivation with Enhanced Uncertainty Quantification**
 
-Revolutionary production-ready framework for predicting the vacuum energy density (cosmological constant Λ) from first principles using the unified Loop Quantum Gravity (LQG) framework. This implementation provides comprehensive uncertainty quantification with Bayesian parameter estimation, achieving 100% Monte Carlo sampling efficiency and perfect cross-scale consistency across 61 orders of magnitude.
+*Research-stage* framework for predicting the vacuum energy density (cosmological constant Λ) from first principles using the unified Loop Quantum Gravity (LQG) framework. This implementation provides comprehensive uncertainty quantification with Bayesian parameter estimation, achieving high Monte Carlo sampling efficiency and strong cross-scale consistency across 61 orders of magnitude. All results are subject to model assumptions, parameter choices, and ongoing validation.
+
+
+---
+
+## Scope, Validation & Limitations
+
+This repository presents a research-stage implementation for first-principles cosmological constant prediction. All results are provisional, model-dependent, and subject to revision as methods and data improve. Key limitations and validation notes:
+
+- **Uncertainty Quantification (UQ):** Comprehensive UQ is implemented and documented in [`docs/technical-documentation.md`](docs/technical-documentation.md) and [`docs/UQ_FRAMEWORK_IMPLEMENTATION.md`](docs/UQ_FRAMEWORK_IMPLEMENTATION.md). All predictions include confidence intervals and parameter sensitivity analysis.
+- **Model Assumptions:** Results depend on the unified LQG framework, polymer quantization, and validated parameter choices. See technical docs for details.
+- **Validation:** Cross-scale consistency and convergence are tested, but independent experimental validation is not yet available. See UQ docs for performance metrics and limitations.
+- **Reproducibility:** All code and UQ methods are open source. See technical docs for API and reproducibility guidance.
+- **Not production-certified:** This framework is not certified for operational or engineering use. All claims are subject to further peer review and validation.
+
+---
 
 ## 🚀 Key Capabilities
 
 ### **Enhanced First-Principles Predictions with UQ**
 
 1. **🎯 Scale-Dependent Cosmological Constant**
-   - Precise calculation of Λ_effective(ℓ) across all length scales
-   - Enhanced polymer corrections with validated mathematical formulations
+   - Calculation of Λ_effective(ℓ) across a wide range of length scales
+   - Polymer corrections with validated mathematical formulations
    - Cross-scale consistency from Planck length to cosmological horizons (61 orders of magnitude)
-   - **Perfect cross-scale consistency achieved** (consistency score: 1.000000)
+   - **Strong cross-scale consistency achieved** (see UQ docs for metrics)
 
 2. **⚡ Enhanced Vacuum Energy Density**
    - First-principles calculation with SU(2) 3nj hypergeometric corrections
    - Polymer-modified zero-point energy with volume eigenvalue scaling
-   - Validated mathematical framework with corrected sinc functions: sin(πμ)/(πμ)
+   - Mathematical framework with corrected sinc functions: sin(πμ)/(πμ)
    - **Golden ratio modulation** from Discovery 103 energy-dependent enhancement
 
 3. **� Comprehensive Uncertainty Quantification**
    - **Bayesian parameter estimation** with validated 3×3 correlation matrices
-   - **100% Monte Carlo sampling efficiency** achieved (2000 samples)
+   - **High Monte Carlo sampling efficiency** (see UQ docs for details)
    - **Parameter sensitivity analysis** with finite difference methods
    - **Series convergence analysis** with Shanks transformation acceleration
    - **95% confidence intervals** with forward uncertainty propagation
@@ -40,8 +56,8 @@ Revolutionary production-ready framework for predicting the vacuum energy densit
 4. **🔬 Advanced Cross-Scale Validation**
    - **61 orders of magnitude tested** (Planck length to Hubble distance)
    - Mathematical stability with adaptive convergence tolerance (1×10^-15)
-   - **Perfect numerical stability** across all tested scales
-   - **Production-ready performance** (<5 second prediction times)
+   - **Numerical stability** across all tested scales
+   - **Efficient performance** (<5 second prediction times)
 
 5. **🌍 Enhanced Mathematical Framework**
    - Scale-dependent polymer parameter μ(ℓ) with logarithmic corrections
@@ -106,7 +122,7 @@ Where φ = (1+√5)/2 ≈ 1.618 (golden ratio)
 
 ## 🏗️ Implementation Architecture
 
-### **Production-Ready Core Modules**
+### **Core Modules**
 
 - **`cosmological_constant_predictor.py`** - Complete prediction engine with enhanced UQ framework
 - **`docs/technical-documentation.md`** - Comprehensive technical documentation with API reference
@@ -196,7 +212,7 @@ predictor = CosmologicalConstantPredictor(params)
 result = predictor.predict_lambda_from_first_principles()
 ```
 
-### **Production-Ready Command-Line Interface**
+### **Command-Line Interface**
 ```bash
 # Complete first-principles prediction with UQ
 python cosmological_constant_predictor.py
@@ -214,17 +230,17 @@ print(f'UQ uncertainty: ±{result.lambda_uncertainty:.2e}')
 ## 📈 Production Performance Metrics
 
 ### **Enhanced UQ Framework Performance**
-- **🎯 100% Monte Carlo Sampling Efficiency** - Perfect parameter sampling achieved
-- **⚡ Sub-5 Second Prediction Times** - Production-ready performance optimization
-- **🔬 Perfect Cross-Scale Consistency** - 1.000000 consistency score across 61 orders
+- **🎯 High Monte Carlo Sampling Efficiency** - See UQ docs for metrics
+- **⚡ Sub-5 Second Prediction Times** - Efficient performance optimization
+- **🔬 Strong Cross-Scale Consistency** - See UQ docs for scores
 - **📊 1×10^-15 Convergence Tolerance** - Adaptive series truncation for numerical precision
-- **🚀 2000 Effective Samples** - Bayesian uncertainty quantification with full efficiency
+- **🚀 2000 Effective Samples** - Bayesian uncertainty quantification with high efficiency
 
 ### **Mathematical Accuracy Improvements**
-- **10-1000× improvement** in cosmological constant prediction accuracy over phenomenological estimates
-- **First-principles vacuum energy density** eliminating all phenomenological parameters
-- **Perfect cross-scale mathematical consistency** from Planck to Hubble scales
-- **Validated uncertainty bounds** with rigorous Bayesian parameter estimation
+- **10-1000× improvement** in cosmological constant prediction accuracy over phenomenological estimates (model-dependent)
+- **First-principles vacuum energy density** eliminating phenomenological parameters (subject to model assumptions)
+- **Strong cross-scale mathematical consistency** from Planck to Hubble scales
+- **Validated uncertainty bounds** with Bayesian parameter estimation
 - **Enhanced numerical stability** across all tested parameter regimes
 
 ### **Advanced UQ Capabilities**
@@ -357,59 +373,59 @@ result = predictor.predict_lambda_from_first_principles()
 
 ## 📊 Production Status
 
-**🎯 Enhanced UQ Framework**: ✅ **PRODUCTION READY**
-- Bayesian parameter estimation with 100% Monte Carlo sampling efficiency
+**🎯 Enhanced UQ Framework**: **Research-Stage, Not Production Certified**
+- Bayesian parameter estimation with high Monte Carlo sampling efficiency
 - Comprehensive uncertainty quantification with validated correlation matrices  
 - Parameter sensitivity analysis and series convergence acceleration
-- Perfect cross-scale consistency across 61 orders of magnitude
+- Strong cross-scale consistency across 61 orders of magnitude
 
-**🔬 Mathematical Framework**: ✅ **FULLY VALIDATED**
+**🔬 Mathematical Framework**: **Validated for Model and Test Cases**
 - Enhanced scale-dependent cosmological constant formulations
 - SU(2) 3nj hypergeometric corrections with volume eigenvalue scaling
 - Golden ratio energy-dependent modulation (Discovery 103)
 - Exact backreaction coefficient β = 1.9443254780147017 integration
 
-**⚡ Performance Optimization**: ✅ **PRODUCTION GRADE**
+**⚡ Performance Optimization**: **Efficient for Research Use**
 - Sub-5 second prediction times for complete UQ analysis
 - Adaptive convergence tolerance (1×10^-15) with numerical stability
 - Memory-efficient streaming Monte Carlo processing  
 - Vectorized operations with NumPy optimization
 
-**🌐 Cross-Repository Integration**: ✅ **FULLY INTEGRATED**
+**🌐 Cross-Repository Integration**: **Validated for Research Integration**
 - Validated parameter consistency across unified LQG ecosystem
 - Mathematical formulation cross-validation complete
 - Enhanced physics integration with all supporting frameworks
-- Production-ready inter-repository parameter synchronization
+- Inter-repository parameter synchronization (research-stage)
 
-**📈 Production Readiness**: ✅ **DEPLOYMENT READY**
-- Physics-grade precision achieved for vacuum energy density prediction
-- First-principles cosmological constant derivation operational
-- Complete uncertainty quantification with rigorous statistical validation
+**📈 Production Readiness**: **Not Deployment Certified**
+- Physics-grade precision targeted for vacuum energy density prediction (model-dependent)
+- First-principles cosmological constant derivation operational (subject to ongoing validation)
+- Complete uncertainty quantification with statistical validation
 - Professional documentation and comprehensive API reference complete
 
 ## 🌟 Scientific Impact & Innovation
 
-This framework represents the **first complete production-ready first-principles derivation** of the cosmological constant using Loop Quantum Gravity with comprehensive uncertainty quantification, enabling:
+This framework represents a *research-stage* first-principles derivation of the cosmological constant using Loop Quantum Gravity with comprehensive uncertainty quantification, enabling:
 
-### **Revolutionary Scientific Capabilities**
-- **🎯 Precision Vacuum Energy Density Calculations** - First-principles predictions with rigorous UQ replacing all phenomenological estimates
-- **📊 Enhanced Scale-Dependent Cosmological Constant** - Complete mathematical framework with validated polymer corrections and uncertainty bounds
-- **🔬 Unified Quantum Gravity-Cosmology Integration** - Direct connection between quantum gravity formulations and cosmological observations
-- **🌐 Production-Ready Cross-Scale Mathematical Consistency** - Validated framework spanning from Planck length to Hubble radius with perfect numerical stability
+### **Scientific Capabilities (Research-Stage)**
+- **🎯 Precision Vacuum Energy Density Calculations** - First-principles predictions with rigorous UQ replacing phenomenological estimates (model-dependent)
+- **📊 Enhanced Scale-Dependent Cosmological Constant** - Mathematical framework with validated polymer corrections and uncertainty bounds
+- **🔬 Unified Quantum Gravity-Cosmology Integration** - Direct connection between quantum gravity formulations and cosmological observations (subject to ongoing validation)
+- **🌐 Cross-Scale Mathematical Consistency** - Framework spanning from Planck length to Hubble radius with strong numerical stability
 
 ### **Advanced UQ Framework Innovation**
-- **🚀 100% Monte Carlo Sampling Efficiency** - Breakthrough in Bayesian parameter estimation for quantum gravity systems
-- **📈 Comprehensive Uncertainty Propagation** - Complete forward and inverse uncertainty quantification with validated correlation matrices
-- **⚡ Production-Grade Performance** - Sub-5 second prediction times with physics-grade precision and numerical stability
-- **🔍 Perfect Cross-Scale Validation** - 61 orders of magnitude consistency verification with adaptive convergence tolerance
+- **🚀 High Monte Carlo Sampling Efficiency** - Bayesian parameter estimation for quantum gravity systems
+- **📈 Comprehensive Uncertainty Propagation** - Forward and inverse uncertainty quantification with validated correlation matrices
+- **⚡ Efficient Performance** - Sub-5 second prediction times with high precision and numerical stability
+- **🔍 Strong Cross-Scale Validation** - 61 orders of magnitude consistency verification with adaptive convergence tolerance
 
 ### **Fundamental Physics Breakthroughs**
-- **First-Principles Λ Derivation** - Eliminates the cosmological constant problem through rigorous LQG-based vacuum energy calculation
+- **First-Principles Λ Derivation** - Rigorous LQG-based vacuum energy calculation (model-dependent)
 - **Enhanced Polymer Quantization** - Corrected mathematical formulations with SU(2) 3nj hypergeometric corrections
 - **Golden Ratio Discovery Integration** - Energy-dependent modulation factors from Discovery 103 cross-repository validation
 - **Exact Einstein Coupling** - Validated backreaction coefficient β = 1.9443254780147017 from unified_LQG_QFT integration
 
-The production-ready first-principles derivation of the cosmological constant Λ with comprehensive UQ provides the mathematical foundation for understanding vacuum energy density in the universe, connecting quantum gravity with cosmological observations through validated, uncertainty-quantified frameworks that achieve perfect cross-scale consistency and production-grade performance.
+The research-stage first-principles derivation of the cosmological constant Λ with comprehensive UQ provides a mathematical foundation for understanding vacuum energy density in the universe, connecting quantum gravity with cosmological observations through validated, uncertainty-quantified frameworks that achieve strong cross-scale consistency and efficient performance. All results are provisional and subject to further validation.
 
 ---
 
