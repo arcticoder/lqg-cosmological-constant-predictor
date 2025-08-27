@@ -20,7 +20,7 @@
 
 ### Overview
 
-The LQG Cosmological Constant Predictor represents a groundbreaking first-principles approach to predicting the cosmological constant (vacuum energy density) using the unified Loop Quantum Gravity framework. This system implements enhanced mathematical formulations for scale-dependent cosmological constant prediction, providing rigorous uncertainty quantification through advanced Bayesian methods.
+The LQG Cosmological Constant Predictor is a research-stage first-principles approach to predicting the cosmological constant (vacuum energy density) using the unified Loop Quantum Gravity framework. The system implements enhanced mathematical formulations for scale-dependent predictions and provides uncertainty quantification through Bayesian methods. Results are model-dependent and subject to ongoing validation and peer review.
 
 ### Core Components
 
@@ -70,7 +70,7 @@ The LQG Cosmological Constant Predictor represents a groundbreaking first-princi
 - Scale-dependent exotic matter density calculations using predicted Λ_effective(ℓ)
 - Polymer enhancement factor computations with volume eigenvalue scaling
 - Target density optimization for precision engineering applications
-- Backreaction coupling integration with exact coefficient β = 1.9443254780147017
+- Backreaction coupling integration using β = 1.9443254780147017 (as configured)
 
 #### 5. `PredictionResult`
 **Purpose**: Comprehensive prediction output with UQ metrics
@@ -80,6 +80,13 @@ The LQG Cosmological Constant Predictor represents a groundbreaking first-princi
 - Monte Carlo statistics
 - Convergence metrics
 - Confidence intervals
+
+## Scope, Validation & Limitations
+
+- Scope: Research-stage implementation. Numerical results depend on model assumptions (e.g., polymer quantization, parameter selections) and cross-repository constants.
+- Uncertainty Quantification: UQ methods and metrics are documented here and in [`UQ_FRAMEWORK_IMPLEMENTATION.md`](UQ_FRAMEWORK_IMPLEMENTATION.md). Reported efficiencies and consistency scores reflect the tested configurations and may vary with parameters.
+- Validation: Cross-scale tests and convergence studies are included; independent experimental validation is not currently available. See the UQ documentation for confidence intervals, sensitivity analysis, and convergence criteria.
+- Operational Use: Not production-certified; do not rely on these outputs for engineering decisions without independent validation and review.
 
 ## Theoretical Foundation
 
@@ -97,13 +104,13 @@ The enhanced exotic matter budget framework leverages the predicted cosmological
 Where:
 - **Λ_effective(ℓ)**: Scale-dependent cosmological constant from first-principles LQG prediction
 - **Enhancement_Polymer**: Polymer quantization enhancement factor = sinc⁴(μ) × Volume_eigenvalue_scaling
-- **β_backreaction**: Exact backreaction coupling = 1.9443254780147017 (validated)
+- **β_backreaction**: Backreaction coupling used = 1.9443254780147017 (from cross-repository assumptions)
 
 **Key Engineering Advantages**:
-1. **Parameter-free exotic matter budget**: All terms derived from first principles
+1. **Reduced free parameters**: Minimizes new free parameters; relies on modeled assumptions
 2. **Scale-dependent optimization**: Enables precise length-scale and polymer parameter optimization
-3. **6.3× enhancement factor**: Significant improvement over classical vacuum energy estimates
-4. **Direct lab translation**: Engineering specs directly computable from fundamental physics
+3. **Illustrative enhancement factor**: Example enhancement factor (~6.3×) observed in specific configurations
+4. **Potential lab translation paths**: Estimates may be derived; independent validation is required for engineering use
 
 **Optimization Framework**:
 ```python
@@ -138,19 +145,19 @@ With enhanced area eigenvalues:
 A_(n,k) = 4π γ(l) l_Pl² √(k(k+1)) [1 + δ_3nj ₂F₁(-2k, 1/2; 1; -ρ_k)]
 ```
 
-#### Golden Ratio Modulation (Discovery 103)
+#### Golden Ratio Modulation (hypothesis tag 103)
 
 Energy-dependent enhancement with golden ratio φ:
 ```
 μ_eff = μ₀ [1 + (φ-1)/φ cos(2π k/φ)] [1 + 0.2 e^(-((E-5.5)/3)²)]
 ```
 
-### Validated Physical Constants
+### Parameters Used
 
 From cross-repository integration:
 - **Immirzi Parameter**: γ = 0.2375 (validated across unified LQG)
-- **Backreaction Coefficient**: β = 1.9443254780147017 (exact from unified_LQG_QFT)
-- **Golden Ratio**: φ = (1+√5)/2 ≈ 1.618 (Discovery 103)
+- **Backreaction Coefficient**: β = 1.9443254780147017 (value used per unified-lqg-qft)
+- **Golden Ratio**: φ = (1+√5)/2 ≈ 1.618 (internal hypothesis tag 103)
 - **SU(2) Enhancement**: δ_3nj = 0.1 (hypergeometric corrections)
 
 ## Implementation Details
@@ -215,7 +222,7 @@ def compute_bayesian_uncertainty_estimate(self, target_scale: float,
 - 3×3 validated correlation matrix from UQ-TODO.ndjson
 - Monte Carlo sampling with reproducible random seed
 - Physical bounds enforcement during sampling
-- 100% sampling efficiency achieved
+- High sampling efficiency observed in tested configurations
 
 #### Parameter Sensitivity Analysis
 ```python
@@ -253,7 +260,7 @@ The UQ framework provides rigorous statistical validation through multiple metho
 - **Correlation Matrix**: 3×3 validated matrix from cross-repository analysis
 - **Sampling Method**: Multivariate normal with physical bounds
 - **Sample Size**: 2000 samples for statistical significance
-- **Efficiency**: 100% sampling efficiency achieved
+- **Efficiency**: High sampling efficiency observed in tested configurations (see UQ docs)
 
 #### 2. Monte Carlo Validation
 - **Reproducibility**: Fixed random seed (42) for consistent results
@@ -386,7 +393,7 @@ The predictor integrates with the complete LQG framework:
 - **3nj Symbol Enhancement**: Area eigenvalue corrections
 
 #### 4. warp-bubble-* repositories
-- **Golden Ratio Modulation**: φ = (1+√5)/2 (Discovery 103)
+- **Golden Ratio Modulation**: φ = (1+√5)/2 (internal hypothesis tag 103)
 - **Energy-Dependent Enhancement**: Gaussian modulation
 - **Scale Integration**: Cross-scale validation methods
 
@@ -412,7 +419,7 @@ The predictor integrates with the complete LQG framework:
 - **Sinc Function**: Corrected π scaling across all implementations
 - **Volume Eigenvalues**: Consistent j summation formulations
 - **Scale Dependence**: Validated logarithmic corrections
-- **Golden Ratio**: Consistent φ usage (Discovery 103)
+- **Golden Ratio**: Consistent φ usage (internal hypothesis tag 103)
 
 ## API Reference
 
@@ -841,17 +848,17 @@ print(f"Relative variation: {validation['lambda_relative_variation']:.2e}")
 
 #### ✅ Cross-Repository Integration
 - **unified-lqg**: Immirzi parameter and volume eigenvalue consistency
-- **unified-lqg-qft**: Exact backreaction coefficient integration
+- **unified-lqg-qft**: Backreaction coefficient integration (value as used)
 - **su2-3nj-* repositories**: Hypergeometric correction implementation
 - **warp-bubble-* repositories**: Golden ratio modulation (Discovery 103)
 - **negative-energy-generator**: Vacuum stability analysis
 - **polymerized-lqg-replicator-recycler**: UQ framework methodologies
 
 #### ✅ Production Readiness
-- **Performance**: Sub-5 second prediction times achieved
+- **Performance**: Typical single-run prediction time on a reference machine is on the order of seconds (environment-dependent)
 - **Stability**: Numerical stability across all tested scales
 - **Validation**: 100% Monte Carlo sampling efficiency
-- **Consistency**: Perfect cross-scale validation scores
+- **Consistency**: High cross-scale validation scores in internal benchmarks
 - **Integration**: All repository dependencies validated
 - **Documentation**: Complete technical and API documentation
 
