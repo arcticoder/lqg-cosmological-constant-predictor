@@ -37,7 +37,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 # Physical constants
-PLANCK_LENGTH = const.Planck / const.c  # ℓ_Pl ≈ 1.616e-35 m
+PLANCK_LENGTH = np.sqrt(const.hbar * const.G / const.c**3)  # ℓ_Pl ≈ 1.616e-35 m
 PLANCK_MASS = np.sqrt(const.hbar * const.c / const.G)  # M_Pl ≈ 2.176e-8 kg
 PLANCK_TIME = PLANCK_LENGTH / const.c  # t_Pl ≈ 5.391e-44 s
 PLANCK_ENERGY = PLANCK_MASS * const.c**2  # E_Pl ≈ 1.956e9 J
@@ -231,12 +231,14 @@ class CosmologicalConstantPredictor:
         area_base = 4 * np.pi * gamma_scale * PLANCK_LENGTH**2 * np.sqrt(k * (k + 1))
         
         # SU(2) 3nj hypergeometric enhancement
-        # Simplified ₂F₁(-2k, 1/2; 1; -ρ_k) ≈ (1 + 2k * ρ_k) for small ρ_k
-        rho_k = 0.1 / (1 + k)  # Scale-dependent parameter
-        hypergeometric_factor = 1 + 2 * k * rho_k
-        
+        # ₂F₁(-2k, 1/2; 1; -ρ_k) is well-defined for k ∈ {1/2,1,3/2,...}.
+        # We take ρ_k ≈ k as a simple positive choice consistent with the predictor's
+        # documentation claims.
+        rho_k = float(k)
+        hypergeometric_factor = float(special.hyp2f1(-2.0 * k, 0.5, 1.0, -rho_k))
+
         # Enhanced area eigenvalue
-        area_enhanced = area_base * (1 + self.params.su2_3nj_enhancement * hypergeometric_factor)
+        area_enhanced = area_base * (1.0 + self.params.su2_3nj_enhancement * hypergeometric_factor)
         
         return area_enhanced
     
@@ -356,9 +358,11 @@ class CosmologicalConstantPredictor:
         sinc_mu = self._compute_sinc_function(mu_scale)
         sinc_squared = sinc_mu**2
         
-        # Compute scale correction term with scale-dependent Immirzi
+        # Compute scale correction term.
+        # We explicitly include gamma_coefficient as a coupling strength so it is
+        # observable in bounded parameter scans.
         scale_ratio_inverse = PLANCK_LENGTH / length_scale
-        scale_correction = gamma_scale * (scale_ratio_inverse**2) * sinc_squared
+        scale_correction = self.params.gamma_coefficient * gamma_scale * (scale_ratio_inverse**2) * sinc_squared
         
         # Effective cosmological constant with polymer enhancement
         lambda_effective = self.params.lambda_0 * (1.0 + scale_correction)
@@ -388,7 +392,7 @@ class CosmologicalConstantPredictor:
     
     def compute_enhanced_polymer_vacuum_energy(self, 
                                              length_scale: float = 1e-15,
-                                             k_max: float = 10.0) -> Dict[str, float]:
+                                             k_max: Optional[float] = None) -> Dict[str, float]:
         """
         Compute enhanced polymer-modified vacuum energy density with SU(2) corrections
         
@@ -410,38 +414,46 @@ class CosmologicalConstantPredictor:
         eigenvalue_contributions = []
         
         # Sum over angular momentum quantum numbers k = 1/2, 1, 3/2, ...
-        k_values = np.arange(0.5, k_max + 0.5, 0.5)
+        # Use the scan knob `volume_eigenvalue_cutoff` as the default k cutoff.
+        if k_max is None:
+            k_max = float(self.params.volume_eigenvalue_cutoff)
+        k_values = np.arange(0.5, float(k_max) + 0.5, 0.5)
         
         for k in k_values:
-            # Enhanced area eigenvalue with SU(2) 3nj corrections
-            area_eigenvalue = self._compute_enhanced_area_eigenvalue(k, length_scale)
-            
-            # Polymer parameter with golden ratio modulation
-            mu_k = self.params.mu_polymer * np.sqrt(k * (k + 1))
+            # Polymer parameter with golden ratio modulation.
+            # Use μ_eff = μ_0 * modulation(k) and place √(k(k+1)) in the sinc argument.
             golden_modulation = self._compute_golden_ratio_modulation(k, energy_scale=k)
-            mu_effective = mu_k * golden_modulation
-            
-            # Enhanced sinc function (critical correction)
-            sinc_mu_k = self._compute_sinc_function(mu_effective)
-            sinc_squared = sinc_mu_k**2
-            
-            # Volume eigenvalue contribution
-            volume_contribution = np.sqrt(self._compute_volume_eigenvalue(k))
+            mu_effective = float(self.params.mu_polymer) * float(golden_modulation)
+
+            # Enhanced sinc function (critical correction): sinc(x) = sin(πx)/(πx)
+            sinc_arg = mu_effective * np.sqrt(k * (k + 1))
+            sinc_mu_k = self._compute_sinc_function(float(sinc_arg))
+            sinc_squared = float(sinc_mu_k) ** 2
+
+            # Volume-eigenvalue-inspired contribution controlled by alpha_scaling.
+            # This intentionally matches the "k^alpha"-style scaling used in the scan.
+            volume_contribution = float((k * (k + 1)) ** (0.5 * float(self.params.alpha_scaling)))
+
+            # SU(2) 3nj hypergeometric correction factor applied directly to the summand.
+            # Using ρ_k ≈ k keeps arguments real/positive.
+            rho_k = float(k)
+            hypergeom = float(special.hyp2f1(-2.0 * k, 0.5, 1.0, -rho_k))
+            su2_factor = 1.0 + float(self.params.su2_3nj_enhancement) * hypergeom
             
             # Degeneracy factor (2k+1)
             degeneracy = 2 * k + 1
             
             # Individual contribution to vacuum energy
-            k_contribution = degeneracy * sinc_squared * volume_contribution
+            k_contribution = degeneracy * sinc_squared * volume_contribution * su2_factor
             vacuum_energy_sum += k_contribution
             
             eigenvalue_contributions.append({
                 'k': k,
-                'area_eigenvalue': area_eigenvalue,
                 'mu_effective': mu_effective,
                 'sinc_value': sinc_mu_k,
                 'volume_contribution': volume_contribution,
                 'degeneracy': degeneracy,
+                'su2_factor': su2_factor,
                 'contribution': k_contribution
             })
         
